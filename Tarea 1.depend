@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1648336164 source:c:\users\neron\desktop\tarea 1\list.c
+	<stdio.h>
+	<stdlib.h>
+	<assert.h>
+	"list.h"
+
+1648336250 c:\users\neron\desktop\tarea 1\list.h
+
+1648341510 source:c:\users\neron\desktop\tarea 1\main.c
+	<stdio.h>
+	<stdlib.h>
+	"list.h"
+	"funciones.h"
+
+1648345395 c:\users\neron\desktop\tarea 1\funciones.h
+	"list.h"
+
+1648349023 source:c:\users\neron\desktop\tarea 1\funciones.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"funciones.h"
+	"list.h"
+
