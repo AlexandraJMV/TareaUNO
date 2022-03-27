@@ -141,17 +141,20 @@ const char *get_csv_field (char * tmp, int k) {
 
 int existe_Lista(listaGlobal * list_gl, const char *str_lista)
 {
+
     if (list_gl->listasExistentes->head == NULL) return 0;
-    for (int i = 0 ; i <= list_gl->CantCanciones ; i++)
+    firstList(list_gl->listasExistentes);
+    for (int i = 0 ; list_gl->listasExistentes->current != NULL ; i++)
     {
-        firstList(list_gl->listasExistentes);
         listaC * aux = (listaC *) list_gl->listasExistentes->current->data;
         if (strcmp(aux->NomLista, str_lista) == 0)
         {
             return 1;
         }
-        nextList(list_gl->listasExistentes);
+        list_gl->listasExistentes->current =  list_gl->listasExistentes->current->next;
     }
+
+    //printf("No existe esta lista %s\n", str_lista);
     return 0;
 }
 
@@ -184,9 +187,11 @@ void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_g
         aux->cantidadCan = 1;
         aux->canciones = createList();
         pushFront(aux->canciones, song);
-        pushFront(list_gl->listasExistentes, aux);
+        //pushFront(list_gl->listasExistentes, aux);
 
         song->lista = aux;
+        pushFront(list_gl->listasExistentes, aux);
+        firstList(list_gl->listasExistentes);
     }
 }
 
@@ -207,7 +212,7 @@ void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl)
                 strcpy(song->artista, aux);
                 break;
             case 2:
-                printf("REVISION FORMATO  GENERO: %s\n", aux);
+                //printf("REVISION FORMATO  GENERO: %s\n", aux);
                 break;
             case 3:
                 song->anyo = atoi(aux);

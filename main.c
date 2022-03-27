@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "list.h"
 #include "funciones.h"
+
 typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre,artista,genero,año y a la lista que pertenece.
     char nombre[31];
     char artista[31];
@@ -22,7 +23,21 @@ typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas
     List* listasExistentes;
 }listaGlobal;
 
+typedef struct Node Node;
 
+struct Node {
+    void * data;
+    Node * next;
+    Node * prev;
+};
+
+struct List {
+    Node * head;
+    Node * tail;
+    Node * current;
+};
+
+typedef List List;
 
 int main()
 {
@@ -38,6 +53,15 @@ int main()
     listaGlobal *L_Global = (listaGlobal *) malloc (sizeof(listaGlobal));
     L_Global = importar("Canciones.csv");
     printf("fin importacion\n\n");
+
+    firstList(L_Global->listasExistentes);
+    while(L_Global->listasExistentes->current  != NULL)
+    {
+        listaC * aux =  (listaC*)L_Global->listasExistentes->current->data;
+        printf("%s\n", aux->NomLista);
+        nextList(L_Global->listasExistentes);
+    }
+
 
     while(1)
     {

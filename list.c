@@ -58,7 +58,9 @@ void * nextList(List * list) {
 	}
 	else if (list->current->next == NULL)
 	{
-		return NULL;
+            Node * aux = createNode(list->current->data);
+			list->current = NULL;
+			return aux->data;
 	}
 		else
 		{
