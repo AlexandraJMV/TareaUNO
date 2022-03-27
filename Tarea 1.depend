@@ -7,14 +7,13 @@
 
 1648336250 c:\users\neron\desktop\tarea 1\list.h
 
-1648341510 source:c:\users\neron\desktop\tarea 1\main.c
+1648356363 source:c:\users\neron\desktop\tarea 1\main.c
 	<stdio.h>
 	<stdlib.h>
 	"list.h"
 	"funciones.h"
 
-1648345395 c:\users\neron\desktop\tarea 1\funciones.h
-	"list.h"
+1648357941 c:\users\neron\desktop\tarea 1\funciones.h
 
 1648352886 source:c:\users\neron\desktop\tarea 1\funciones.c
 	<stdio.h>

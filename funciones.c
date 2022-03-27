@@ -4,12 +4,28 @@
 #include "funciones.h"
 #include "list.h"
 
+typedef struct Node Node;
+
+struct Node {
+    void * data;
+    Node * next;
+    Node * prev;
+};
+
+struct List {
+    Node * head;
+    Node * tail;
+    Node * current;
+};
+
+typedef List List;
+
 typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre,artista,genero,año y a la lista que pertenece.
     char nombre[31];
     char artista[31];
     char genero[31];
     int anyo;
-    listaC* lista;
+    listaC * lista;
 }cancion;
 
 typedef struct listaC{ //Estructura de las listas de canciones indica: Cantidad de canciones, las canciones , y nombre de la lista (segun archivo).
@@ -22,6 +38,7 @@ typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas
     size_t CantCanciones;
     List* canciones;
     List* listasExistentes;
+    List* generos;
 }listaGlobal;
 
 // Importacion de la informacion sobre canciones.
@@ -66,7 +83,7 @@ listaGlobal * importar (char * nombre_archivo)
     // Lectura detalles y rellenado de campos a traves de funcion
     while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
     {
-        rellenar_cancion(aux_song, aux_cadena);
+        rellenar_cancion(aux_song, aux_cadena, gl_canciones);
         gl_canciones->CantCanciones ++;
         pushFront(gl_canciones->canciones, aux_song);
 
@@ -122,13 +139,64 @@ const char *get_csv_field (char * tmp, int k) {
     return NULL;
 }
 
+int existe_Lista(listaGlobal * list_gl, const char *str_lista)
+{
+    if (list_gl->listasExistentes->head == NULL) return 0;
+    for (int i = 0 ; i <= list_gl->CantCanciones ; i++)
+    {
+        firstList(list_gl->listasExistentes);
+        listaC * aux = (listaC *) list_gl->listasExistentes->current->data;
+        if (strcmp(aux->NomLista, str_lista) == 0)
+        {
+            return 1;
+        }
+        nextList(list_gl->listasExistentes);
+    }
+    return 0;
+}
 
-void rellenar_cancion(cancion * song, char * aux_cadena)
+void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl)
+{
+    // existe_Lista mueve el current a la posicion de la lista en caso de que exista, devuelve un entero (0 o 1)
+    if (existe_Lista(list_gl, str_lista))
+    {
+        song->lista =(listaC *) list_gl->listasExistentes->current->data;
+        pushBack(song->lista->canciones, song);
+        song->lista->cantidadCan ++;
+    }
+    else
+    {
+        song->lista = (listaC *) malloc (sizeof(listaC));
+        if (song->lista == NULL)
+        {
+            perror("No se pudo guardar memoria para la lista");
+            exit(1);
+        }
+
+        listaC * aux = (listaC *) malloc (sizeof(listaC));
+        if (aux == NULL)
+        {
+            perror("No se pudo guardar memoria para la lista auxiliar");
+            exit(1);
+        }
+
+        strcpy(aux->NomLista, str_lista);
+        aux->cantidadCan = 1;
+        aux->canciones = createList();
+        pushFront(aux->canciones, song);
+        pushFront(list_gl->listasExistentes, aux);
+
+        song->lista = aux;
+    }
+}
+
+
+void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl)
 {
     //printf("%s\n", aux_cadena);
     for(int i = 0 ; i<5 ; i++)
     {
-        char *aux  = get_csv_field(aux_cadena, i);
+        const  char *aux  = get_csv_field(aux_cadena, i);
         //printf("AUXILIAR = %s  ", aux);
         switch(i)
         {
@@ -139,14 +207,15 @@ void rellenar_cancion(cancion * song, char * aux_cadena)
                 strcpy(song->artista, aux);
                 break;
             case 2:
-                //agregar_genero();
+                printf("REVISION FORMATO  GENERO: %s\n", aux);
                 break;
             case 3:
                 song->anyo = atoi(aux);
                 break;
             case 4:
-                printf("REVISION FORMATO  LISTA: %s\n", aux);
+                agregar_lista(aux, song, list_gl);
                 break;
         }
+    }
 }
-}
+

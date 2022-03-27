@@ -22,6 +22,8 @@ typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas
     List* listasExistentes;
 }listaGlobal;
 
+
+
 int main()
 {
     printf("Spotify Clone\n\n");
