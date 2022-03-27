@@ -1,11 +1,11 @@
-# TareaUNO
-Desgraciadamente la funcion de lectura del profesor no lee los ultimos caracteres del ultimo campo, asi que estoy media perdida lmao
-Pero aqui el avance que tengo lol lollol
-//// 
+No he testeado cuales son las imágenes que se guardan y si están correctas,
+pero puedo asegurar que se realiza un buen conteo a la hora de agregar a las listas correspondientes.
 
 
-Master dos deberia poseer el codigo necesario para guardar la informacion sobre listas de reproduccion perono estoy seguro de como comprobarlo lol
-el branch master es el que no tiene toda esa cosa
+Se deben hacer cambios, sospecho que el código fallará si se ingresan GENEROS con espacios 
+ejemplo: "Genero musical".
+
+-- para pensar luego. 
 
 
-Un rapido analisis muestra que veo mal si se repite una lista noooo
+eso
