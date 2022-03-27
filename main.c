@@ -35,6 +35,7 @@ int main()
 
     listaGlobal *L_Global = (listaGlobal *) malloc (sizeof(listaGlobal));
     L_Global = importar("Canciones.csv");
+    printf("fin importacion\n\n");
 
     while(1)
     {

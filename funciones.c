@@ -73,6 +73,7 @@ listaGlobal * importar (char * nombre_archivo)
         //printf("%s\n", aux_song->nombre);
         getc(arc_canciones);
     }
+    fclose(arc_canciones);
     return gl_canciones;
 }
 
@@ -108,6 +109,12 @@ const char *get_csv_field (char * tmp, int k) {
     }
 
     if(k==j) {
+
+        i = i-1;
+        for (i ; tmp[i]!=  '\0' ; i++)
+        {
+            ret[i-ini_i] =  tmp[i];
+        }
        ret[i-ini_i] = 0;
        return ret;
     }
@@ -138,7 +145,7 @@ void rellenar_cancion(cancion * song, char * aux_cadena)
                 song->anyo = atoi(aux);
                 break;
             case 4:
-                //printf("REVISION FORMATO  LISTA: %s\n", aux);
+                printf("REVISION FORMATO  LISTA: %s\n", aux);
                 break;
         }
 }
