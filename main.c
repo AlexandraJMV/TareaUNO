@@ -3,7 +3,6 @@
 #include "list.h"
 #include "funciones.h"
 
-
 typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre,artista,genero,año y a la lista que pertenece.
     char nombre[31];
     char artista[31];
@@ -60,15 +59,15 @@ int main()
 
     listaGlobal *L_Global = (listaGlobal *) malloc (sizeof(listaGlobal));
     L_Global = importar("Canciones.csv");
-    printf("fin importacion\n\n");
 
-    firstList(L_Global->generos);
-    while(L_Global->generos->current  != NULL)
+    generoC *aux = (generoC *) firstList(L_Global->generos);
+    while(aux  != NULL)
     {
-        generoC * aux =  (generoC*)L_Global->generos->current->data;
         printf("Nombre:%s   Cantidad:%d\n", aux->NomGenero, aux->cantidadCan);
-        nextList(L_Global->generos);
+        if((aux = nextList(L_Global->generos)) == NULL) break;
     }
+
+    printf("total canciones es %d\n", L_Global->CantCanciones);
 
 
     while(1)

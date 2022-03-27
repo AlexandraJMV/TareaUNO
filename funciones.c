@@ -98,6 +98,7 @@ listaGlobal * importar (char * nombre_archivo)
         getc(arc_canciones);
     }
     fclose(arc_canciones);
+    free(aux_song);
     return gl_canciones;
 }
 
@@ -198,29 +199,31 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
 }
 
 
-int existe_Lista(listaGlobal * list_gl, const char *str_lista)
+listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista)
 {
-    if (list_gl->listasExistentes->head == NULL) return 0;
-    firstList(list_gl->listasExistentes);
-    for (int i = 0 ; list_gl->listasExistentes->current != NULL ; i++)
+    listaC * aux_lista = (listaC *) firstList(list_gl->listasExistentes);
+
+    if (aux_lista == NULL) return NULL;
+
+    for (int i = 0 ; aux_lista != NULL ; i++)
     {
-        listaC * aux = (listaC *) list_gl->listasExistentes->current->data;
-        if (strcmp(aux->NomLista, str_lista) == 0)
+        if (strcmp(aux_lista->NomLista, str_lista) == 0)
         {
-            return 1;
+            return aux_lista;
         }
-        list_gl->listasExistentes->current =  list_gl->listasExistentes->current->next;
-        //nextList(list_gl->listasExistentes);
+        aux_lista = (listaC *) nextList(list_gl->listasExistentes);
     }
-    return 0;
+    return NULL;
 }
 
 void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl)
 {
     // existe_Lista mueve el current a la posicion de la lista en caso de que exista, devuelve un entero (0 o 1)
-    if (existe_Lista(list_gl, str_lista))
+    //SOLUCION = EXISTE LISTA DEVULEVE DATO DEL CURRENT
+    listaC * aux_existe = existe_Lista(list_gl, str_lista);
+    if (aux_existe != NULL )
     {
-        song->lista =(listaC *) list_gl->listasExistentes->current->data;
+        song->lista = aux_existe;
         pushBack(song->lista->canciones, song);
         song->lista->cantidadCan ++;
     }
@@ -251,42 +254,42 @@ void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_g
     }
 }
 
-int existe_genero(char *genero, List *lista_gen)
+generoC * existe_genero(char *genero, List *lista_gen)
 {
-    if (lista_gen->head == NULL) return 0;
-    firstList(lista_gen);
-    while(lista_gen->current != NULL)
+    generoC * aux_genero= (generoC *) firstList(lista_gen);
+
+    if (aux_genero == NULL)
     {
-        generoC * aux = (generoC *) lista_gen->current->data;
-        if(strcmp(aux->NomGenero, genero) == 0)
-        {
-            return 1;
-        }
-        nextList(lista_gen);
+        return NULL;
     }
-    return 0;
+    while(aux_genero != NULL)
+    {
+        if(strcmp(aux_genero->NomGenero, genero) == 0)
+        {
+            return aux_genero;
+        }
+        aux_genero = (generoC *) nextList(lista_gen);
+    }
+    return NULL;
 }
 
 void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl)
 {
     int i = 0;
     const char * aux_gen = get_csv_fieldV2(cad_generos, i);
+
     do
     {
         if (aux_gen == NULL ) break;
-        if (i>0)
-        {
 
-        }
-        if (existe_genero((char *)aux_gen, list_gl->generos) )
+        generoC * aux_existe = existe_genero((char *)aux_gen, list_gl->generos);
+        if (aux_existe != NULL)
         {
-            generoC * aux = (generoC *) malloc (sizeof(generoC));
-            aux = (generoC *) list_gl->generos->current->data;
-            pushFront(song->generos , aux);
-            aux->cantidadCan++;
-            pushFront(aux->canciones, song);
+            pushFront(song->generos , aux_existe);
+            aux_existe->cantidadCan++;
+            pushFront(aux_existe->canciones, song);
         }
-        else
+        else if (aux_existe == NULL)
         {
             generoC *aux = (generoC *) malloc (sizeof(generoC));
             if (aux == NULL)
