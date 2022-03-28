@@ -4,22 +4,6 @@
 #include "funciones.h"
 #include "list.h"
 
-typedef struct Node Node;
-
-struct Node {
-    void * data;
-    Node * next;
-    Node * prev;
-};
-
-struct List {
-    Node * head;
-    Node * tail;
-    Node * current;
-};
-
-typedef List List;
-
 typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre,artista,genero,año y a la lista que pertenece.
     char nombre[31];
     char artista[31];
