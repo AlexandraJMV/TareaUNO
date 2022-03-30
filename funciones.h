@@ -27,4 +27,15 @@ generoC  * existe_genero(char *genero, List *lista_gen);
 listaC * existe_Lista(listaGlobal * list_gl, const char *str_lista);
 
 void agregar_genero(cancion * song, char * aux_cadena, listaGlobal * list_gl);
+
+cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can);
+
+void borrar_de_lista(cancion * song);
+
+void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_gl);
+
+void borrar_de_genero(cancion * song);
+
+cancion *crear_cancion(void);
+
 #endif // FUNCIONES_H_INCLUDED

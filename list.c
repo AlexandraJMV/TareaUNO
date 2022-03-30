@@ -101,6 +101,7 @@ void pushFront(List * list, void * data) {
 	{
 		list->head = new_node;
 		list->tail = new_node;
+		list->current = new_node;
 	}
 	else
 	{
@@ -119,11 +120,16 @@ void pushBack(List * list, void * data) {
 void pushCurrent(List * list, void * data) {
 	Node * new_node = createNode(data);
 
-	if (list->current == list->tail)
+	if (list->current == NULL)
+   {
+        pushFront(list, data);
+    }
+	else if (list->current->next ==  NULL)
 	{
-		list->current->next = new_node;
-		new_node->prev = list->current;
-		list->tail = new_node;
+	    list->tail = new_node;
+		list->current->next = list->tail;
+		list->tail->prev= list->current;
+
 	}
 	else
 	{

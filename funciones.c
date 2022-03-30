@@ -31,61 +31,6 @@ typedef struct generoC{
     char NomGenero[31];
 }generoC;
 
-// Importacion de la informacion sobre canciones.
-listaGlobal * importar (char * nombre_archivo)
-{
-    // Variables a utilizar
-    FILE * arc_canciones;
-    listaGlobal * gl_canciones;
-    cancion * aux_song;
-    char aux_cadena[150];
-
-    // Abrir archivo
-    arc_canciones = fopen(nombre_archivo, "rt");
-    if (arc_canciones == NULL)
-    {
-        perror("No se pudo abrir el archivo de canciones en modo lectura");
-        exit(1);
-    }
-
-    // Reservar memoria cancion auxiliar
-    aux_song = (cancion *) malloc( sizeof(cancion) );
-    if (aux_song == NULL)
-    {
-        perror("Error al reservar memoria para auxiliar");
-        exit(1);
-    }
-
-    // Reservar memoria lista global
-    gl_canciones = (listaGlobal *) malloc( sizeof(listaGlobal) );
-    if (gl_canciones == NULL)
-    {
-        perror("Error al reservar memoria para auxiliar");
-        exit(1);
-    }
-
-    // Inicializar variables pertinentes
-    gl_canciones->CantCanciones = 0;
-    gl_canciones->canciones = createList();
-    gl_canciones->listasExistentes = createList();
-    gl_canciones->generos = createList();
-    aux_song->anyo = 0;
-
-    // Lectura detalles y rellenado de campos a traves de funcion
-    while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
-    {
-        rellenar_cancion(aux_song, aux_cadena, gl_canciones);
-        gl_canciones->CantCanciones ++;
-        pushFront(gl_canciones->canciones, aux_song);
-
-        //printf("%s\n", aux_song->nombre);
-        getc(arc_canciones);
-    }
-    fclose(arc_canciones);
-    free(aux_song);
-    return gl_canciones;
-}
-
 const char *get_csv_field (char * tmp, int k) {
     int open_mark = 0;
     char* ret=(char*) malloc (150*sizeof(char));
@@ -182,9 +127,7 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
     return NULL;
 }
 
-
-listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista)
-{
+listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista){
     listaC * aux_lista = (listaC *) firstList(list_gl->listasExistentes);
 
     if (aux_lista == NULL) return NULL;
@@ -200,8 +143,7 @@ listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista)
     return NULL;
 }
 
-void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl)
-{
+void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl){
     // existe_Lista mueve el current a la posicion de la lista en caso de que exista, devuelve un entero (0 o 1)
     //SOLUCION = EXISTE LISTA DEVULEVE DATO DEL CURRENT
     listaC * aux_existe = existe_Lista(list_gl, str_lista);
@@ -230,16 +172,14 @@ void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_g
         strcpy(aux->NomLista, str_lista);
         aux->cantidadCan = 1;
         aux->canciones = createList();
-        pushFront(aux->canciones, song);
+        pushBack(aux->canciones, song);
 
         song->lista = aux;
-        pushFront(list_gl->listasExistentes, aux);
-        firstList(list_gl->listasExistentes);
+        pushBack(list_gl->listasExistentes, aux);
     }
 }
 
-generoC * existe_genero(char *genero, List *lista_gen)
-{
+generoC * existe_genero(char *genero, List *lista_gen){
     generoC * aux_genero= (generoC *) firstList(lista_gen);
 
     if (aux_genero == NULL)
@@ -257,8 +197,7 @@ generoC * existe_genero(char *genero, List *lista_gen)
     return NULL;
 }
 
-void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl)
-{
+void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
     int i = 0;
     const char * aux_gen = get_csv_fieldV2(cad_generos, i);
 
@@ -269,9 +208,9 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl)
         generoC * aux_existe = existe_genero((char *)aux_gen, list_gl->generos);
         if (aux_existe != NULL)
         {
-            pushFront(song->generos , aux_existe);
+            pushBack(song->generos , aux_existe);
             aux_existe->cantidadCan++;
-            pushFront(aux_existe->canciones, song);
+            pushBack(aux_existe->canciones, song);
         }
         else if (aux_existe == NULL)
         {
@@ -285,22 +224,18 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl)
             strcpy(aux->NomGenero, aux_gen);
             aux->cantidadCan = 1;
             aux->canciones = createList();
-            pushFront(aux->canciones, song);
+            pushBack(aux->canciones, song);
 
             song->generos = createList();
-            pushFront(song->generos, aux);
-            pushFront(list_gl->generos, aux);
-            firstList(list_gl->generos);
-            firstList(song->generos);
+            pushBack(song->generos, aux);
+            pushBack(list_gl->generos, aux);
         }
         i++;
         aux_gen = get_csv_fieldV2(cad_generos, i);
     }while(1);
 }
 
-
-void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl)
-{
+void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
     //printf("%s\n", aux_cadena);
     for(int i = 0 ; i<5 ; i++)
     {
@@ -326,3 +261,218 @@ void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl)
     }
 }
 
+/*Eliminar cancion (char* Nombre, char* artista, int año): El usuario ingresa el nombre de
+una canción y la aplicación elimina la canción correspondiente de todas las listas de reproducción correspondientes.
+De no existir la canción se debe mostrar un aviso por pantalla.*/
+
+cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
+
+    cancion * aux_cancion = (cancion *) firstList(lista_can);
+
+    printf("Primera cancion en lista = %s, %s, %d\n\n", aux_cancion->nombre, aux_cancion->artista, aux_cancion->anyo);
+    if (aux_cancion == NULL)
+    {
+        return NULL;
+    }
+    while(aux_cancion != NULL)
+    {
+        //printf("Comparando %s y %s\n\n", aux_cancion->nombre, song);
+        if(strcmp(aux_cancion->nombre, song) == 0){
+            printf("Existe el nombre!\n");
+            if (strcmp(aux_cancion->artista, artista) == 0){
+                printf("Existe el artista!\n");
+                if(aux_cancion->anyo ==  anyo){
+                    printf("Existe el  anyo!\n");
+                     return aux_cancion;
+                }
+            }
+        }
+        else
+            aux_cancion = (cancion *) nextList(lista_can);
+    }
+    return NULL;
+}
+
+void borrar_de_lista(cancion * song){
+    cancion * aux_song = (cancion *) firstList(song->lista->canciones);
+
+    while (aux_song != NULL)
+    {
+        if (aux_song == song)
+        {
+            popCurrent(song->lista->canciones);
+            song->lista->cantidadCan--;
+            break;
+        }
+        else
+            aux_song = (cancion *)  nextList(song->lista->canciones);
+    }
+}
+
+void borrar_de_genero(cancion * song){
+    generoC * rec_generos = firstList(song->generos);
+
+    while (rec_generos != NULL)
+    {
+        cancion * aux_song = firstList(rec_generos->canciones);
+        while (aux_song != NULL)
+        {
+            if(aux_song == song)
+            {
+                popCurrent(rec_generos->canciones);
+                rec_generos->cantidadCan--;
+                break;
+            }
+            else
+                aux_song =  (cancion *)  nextList(rec_generos->canciones);
+        }
+        rec_generos =  (generoC *) nextList(song->generos);
+    }
+}
+
+void borrar_de_global(cancion * song, listaGlobal * l_gl){
+    cancion  * aux_song = (cancion *) firstList (l_gl->canciones);
+
+    while (aux_song != NULL)
+    {
+        if (song == aux_song)
+        {
+            popCurrent(l_gl->canciones);
+            l_gl->CantCanciones--;
+            break;
+        }
+        else
+            aux_song = (cancion  *) nextList (l_gl->canciones);
+    }
+}
+
+void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_gl){
+    cancion * aux_song = existe_cancion(nombre, artista, anyo, l_gl->canciones);
+    if (aux_song == NULL)
+    {
+        printf("La cancion ingresada no existe!\n\n");
+    }
+    else
+    {
+        borrar_de_lista(aux_song);
+        borrar_de_genero(aux_song);
+        borrar_de_global(aux_song, l_gl);
+        printf("Se ha eliminado la cancion seleccionada!\n\n");
+    }
+}
+
+cancion * crear_cancion(void){
+    cancion * aux = (cancion *) malloc (sizeof(cancion));
+    return aux;
+}
+
+listaGlobal * importar (char * nombre_archivo){
+    // Variables a utilizar
+    FILE * arc_canciones;
+    listaGlobal * gl_canciones;
+    char aux_cadena[150];
+
+    // Abrir archivo
+    arc_canciones = fopen(nombre_archivo, "rt");
+    if (arc_canciones == NULL)
+    {
+        perror("No se pudo abrir el archivo de canciones en modo lectura");
+        exit(1);
+    }
+
+    // Reservar memoria lista global
+    gl_canciones = (listaGlobal *) malloc( sizeof(listaGlobal) );
+    if (gl_canciones == NULL)
+    {
+        perror("Error al reservar memoria para auxiliar");
+        exit(1);
+    }
+
+    // Inicializar variables pertinentes
+    gl_canciones->CantCanciones = 0;
+    gl_canciones->canciones = createList();
+    gl_canciones->listasExistentes = createList();
+    gl_canciones->generos = createList();
+/*
+        aux_song = (cancion *) malloc( sizeof(cancion) );
+        if (aux_song == NULL)
+        {
+            perror("Error al reservar memoria para auxiliar");
+            exit(1);
+        }
+        aux_song->anyo = 0;*/
+
+    // Lectura detalles y rellenado de campos a traves de funcion
+   //cancion aux_song; int a;
+    while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
+    {
+        cancion * aux_song= NULL;
+        &aux_song = crear_cancion();
+        printf("DIRECCION DE MEMORIA DE SONG : %p\n", &aux_song);
+        /*
+        //printf("ANTES DE AGREGAR = %s\n", aux_cadena);
+        rellenar_cancion(&aux_song, aux_cadena, gl_canciones);
+        //printf("LUEGO DE AGREGAR = %s, %s, %d\n", aux_song->nombre, aux_song->artista, aux_song->anyo);
+        gl_canciones->CantCanciones ++;
+        pushBack(gl_canciones->canciones, &aux_song);
+
+        if(gl_canciones->CantCanciones == 1){
+                    cancion * auxxx = (cancion *) lastList(gl_canciones->canciones);
+                    printf("IMPRESION DEL ULTIMO GUARDADO\n");
+                    printf("%s\n\n", auxxx->nombre);
+
+                    auxxx = (cancion *) prevList(gl_canciones->canciones);
+                    printf("IMPRESION DEL ANTERIOR GUARDADO\n");
+                    printf("%s\n\n", auxxx->nombre);
+
+
+                    auxxx = (cancion *) nextList(gl_canciones->canciones);
+                    auxxx = (cancion *) nextList(gl_canciones->canciones);
+                    printf("IMPRESION DEL SIGUIENTE GUARDADO\n");
+                    printf("%s\n\n", auxxx->nombre);
+        }*/
+        getc(arc_canciones);
+    }
+
+    /*
+    // TEST IMPRESION DE INFORMACIONPOR GENERO
+        generoC * test = (generoC *) firstList(gl_canciones->generos);
+        int contador = 1;
+        while (test != NULL)
+        {
+            printf("%d - %s\n\n", contador, test->NomGenero);
+
+            cancion * test2 = (cancion *) firstList(test->canciones);
+            int cont2 = 1;
+
+
+            while(test2 != NULL)
+            {
+                printf("%d - %s\n",cont2, test2->nombre);
+                test2 = (cancion *) nextList(test->canciones);
+                cont2++;
+            }
+            printf("\n");
+            contador++;
+            test = (generoC *) nextList(gl_canciones->generos);
+        }
+
+    cancion * test = (cancion *) firstList(gl_canciones->canciones);
+
+    while (test != NULL)
+    {
+        printf("%s\n\n", test->nombre);
+        test = (cancion *) nextList(gl_canciones->canciones);
+    }
+
+
+    cancion * test = (cancion *) firstList(gl_canciones->canciones);
+    cancion * test2 = (cancion *)  nextList(gl_canciones->canciones);
+    strcat(test->nombre, "abcd");
+    printf("\nPRIMER y SEGUNDO ELEMENTO DE LA LISTA:\n");
+    printf("%s, %s\n\n", test->nombre, test2->nombre);*/
+
+    fclose(arc_canciones);
+    //free(aux_song);
+    return gl_canciones;
+}
