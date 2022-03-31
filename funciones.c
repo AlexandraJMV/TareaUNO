@@ -320,12 +320,10 @@ void borrar_de_genero(cancion * song){ // Borra la cancion de los generos a la c
             if(aux_song == song)
             {
                 popCurrent(rec_generos->canciones);
-                popCurrent(song->generos);
                 rec_generos->cantidadCan--;
                 break;
             }
-            else
-                aux_song =  (cancion *)  nextList(rec_generos->canciones);
+            else aux_song =  (cancion *)  nextList(rec_generos->canciones);
         }
         rec_generos =  (generoC *) nextList(song->generos);
     }
@@ -376,7 +374,7 @@ listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desd
     // Variables a utilizar
     FILE * arc_canciones;
     listaGlobal * gl_canciones;
-    char aux_cadena[150];
+    char aux_cadena[150] ="";
 
     // Abrir archivo
     arc_canciones = fopen(nombre_archivo, "rt");
@@ -401,6 +399,10 @@ listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desd
     gl_canciones->generos = createList();
 
     // Lectura detalles y rellenado de campos a traves de funcion
+    getc(arc_canciones);
+    getc(arc_canciones);
+    getc(arc_canciones);
+
     while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
     {
         cancion * aux_song = crear_cancion();
