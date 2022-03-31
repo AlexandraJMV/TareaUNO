@@ -15,3 +15,5 @@ Eliminar cancion semi funcional
                  Esto permitira una comparacion de cadenas sin que nos importe  tanto el detalle, agilizando la busqueda.
                  
   
+ ***RECORDATORIO***
+ EN AGREGAR, CUANDO LA LISTA SE CAMBIA PARA UNA CANCION, ME FALTA ELIMINAR LA CANCION DE LA LISTA ANTERIOR.
