@@ -1,11 +1,15 @@
-No he testeado cuales son las imágenes que se guardan y si están correctas,
-pero puedo asegurar que se realiza un buen conteo a la hora de agregar a las listas correspondientes.
+Importacion funcional.
 
+Eliminar cancion semi funcional
+**>Problemas**:
+  Si cualquiera de los campos con los cales se busca la  cancion (Nombre, Artista o anyo) presenta un espacio antes
+  o despues, no se detectara como la misma (A pesar que se perciba como tal). 
+  De igual forma la busqueda es extremadamente sensible a Mayusculas y minusculas.
 
-Se deben hacer cambios, sospecho que el código fallará si se ingresan GENEROS con espacios 
-ejemplo: "Genero musical".
-
--- para pensar luego. 
-
-
-eso
+  *Soluciones*-> Funcion  que elimine espacios antes y despues de cadenas cuando se  ingrese cualquier cadena,
+                 tanto al importar canciones como al realizar busquedas.
+                 
+                 Cadena auxiliar dentro del struct de canciones (o un auxiliar temporal al buscar) completamente en mayusculas/minusculas. 
+                 Esto permitira una comparacion de cadenas sin que nos importe  tanto el detalle, agilizando la busqueda.
+                 
+  
