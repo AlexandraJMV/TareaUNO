@@ -25,7 +25,7 @@ typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas
     List* generos;
 }listaGlobal;
 
-typedef struct generoC{
+typedef struct generoC{ // Estructura de  los generos indiza: Cantidad, canciones  pertenecientes al genero y el nombre del mismo.
     size_t cantidadCan;
     List* canciones;
     char NomGenero[31];
@@ -129,7 +129,7 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
     return NULL;
 }
 
-listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista){
+listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista){ // Comprueba exitencia de una lista de reproduccion en la lista global
     listaC * aux_lista = (listaC *) firstList(list_gl->listasExistentes);
 
     if (aux_lista == NULL) return NULL;
@@ -145,7 +145,7 @@ listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista){
     return NULL;
 }
 
-void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl){
+void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_gl){ // Agrega cancion a lista existente o crear nueva lista en caso de que no exista
     // existe_Lista mueve el current a la posicion de la lista en caso de que exista, devuelve un entero (0 o 1)
     //SOLUCION = EXISTE LISTA DEVULEVE DATO DEL CURRENT
     listaC * aux_existe = existe_Lista(list_gl, str_lista);
@@ -181,7 +181,7 @@ void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_g
     }
 }
 
-generoC * existe_genero(char *genero, List *lista_gen){
+generoC * existe_genero(char *genero, List *lista_gen){ // Comprueba existencia de un genero en la lista global
     generoC * aux_genero= (generoC *) firstList(lista_gen);
 
     if (aux_genero == NULL)
@@ -199,7 +199,7 @@ generoC * existe_genero(char *genero, List *lista_gen){
     return NULL;
 }
 
-void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
+void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){ // Agrega cancion a genero existente o crear un nuevo genero en caso de que no exista
     int i = 0;
     const char * aux_gen = get_csv_fieldV2(cad_generos, i);
     song->generos = createList();
@@ -236,7 +236,7 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
     }while(1);
 }
 
-void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
+void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){ // Rellena cada campo de un struct cancion a partir de una cadena
     for(int i = 0 ; i<5 ; i++)
     {
         const  char *aux  = get_csv_field(aux_cadena, i);
@@ -261,11 +261,7 @@ void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
     }
 }
 
-void agregar_cancion (char *nom, char * artista, int anyo, listaGlobal * lg){
-    return;
-}
-
-cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
+cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){ // Comprueba existencia de una cancion en la lista global
 
 
     cancion * aux_cancion = (cancion *) firstList(lista_can);
@@ -296,7 +292,7 @@ cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
     return NULL;
 }
 
-void borrar_de_lista(cancion * song){
+void borrar_de_lista(cancion * song){ // Borra la cancion de la lista de reproduccion a la que  pertenece
     cancion * aux_song = (cancion *) firstList(song->lista->canciones);
 
     while (aux_song != NULL)
@@ -305,6 +301,7 @@ void borrar_de_lista(cancion * song){
         {
             popCurrent(song->lista->canciones);
             song->lista->cantidadCan--;
+            song->lista  = NULL;
             break;
         }
         else
@@ -312,7 +309,7 @@ void borrar_de_lista(cancion * song){
     }
 }
 
-void borrar_de_genero(cancion * song){
+void borrar_de_genero(cancion * song){ // Borra la cancion de los generos a la cual pertenece
     generoC * rec_generos = firstList(song->generos);
 
     while (rec_generos != NULL)
@@ -323,6 +320,7 @@ void borrar_de_genero(cancion * song){
             if(aux_song == song)
             {
                 popCurrent(rec_generos->canciones);
+                popCurrent(song->generos);
                 rec_generos->cantidadCan--;
                 break;
             }
@@ -333,7 +331,7 @@ void borrar_de_genero(cancion * song){
     }
 }
 
-void borrar_de_global(cancion * song, listaGlobal * l_gl){
+void borrar_de_global(cancion * song, listaGlobal * l_gl){ // Borra la cancion de la lista global
     cancion  * aux_song = (cancion *) firstList (l_gl->canciones);
 
     while (aux_song != NULL)
@@ -349,7 +347,7 @@ void borrar_de_global(cancion * song, listaGlobal * l_gl){
     }
 }
 
-void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_gl){
+void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_gl){ // Elimina cancion ingresada en caso de que exista
     cancion * aux_song = existe_cancion(nombre, artista, anyo, l_gl->canciones);
     if (aux_song == NULL)
     {
@@ -360,12 +358,11 @@ void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_
         borrar_de_lista(aux_song);
         borrar_de_genero(aux_song);
         borrar_de_global(aux_song, l_gl);
-        l_gl->CantCanciones--;
         printf("Se ha eliminado la cancion seleccionada!\n\n");
     }
 }
 
-cancion * crear_cancion(void){
+cancion * crear_cancion(void){ // Guarda memoria para una  nueva cancion
     cancion * aux = (cancion *) malloc (sizeof(cancion));
     if (aux == NULL)
     {
@@ -375,7 +372,7 @@ cancion * crear_cancion(void){
     return aux;
 }
 
-listaGlobal * importar (char * nombre_archivo){
+listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desde archivo decanciones
     // Variables a utilizar
     FILE * arc_canciones;
     listaGlobal * gl_canciones;
@@ -418,7 +415,7 @@ listaGlobal * importar (char * nombre_archivo){
     return gl_canciones;
 }
 
-void elim_main_ver(listaGlobal * lg){
+void elim_main_ver(listaGlobal * lg){ // Impresion de mensajes  para recibir imput al eliminar cancion, llamada a funcion eliminar
     char nom[31];
     char artist[31];
     int year;
@@ -446,7 +443,7 @@ void elim_main_ver(listaGlobal * lg){
     system("cls");
 }
 //
-void concat_song(char *nom, char * artist,  char * gens,  char * year, char * list){
+void concat_song(char *nom, char * artist,  char * gens,  char * year, char * list){ // Concatenacion de informacion en cadenas en el formato que requiere la funcion RELLENAR CANCION
     strcat(nom, ",");
     strcat(nom,artist);
     strcat(nom,",");
@@ -457,7 +454,7 @@ void concat_song(char *nom, char * artist,  char * gens,  char * year, char * li
     strcat(nom,list);
 }
 
-void leer_agregar_main(listaGlobal  *  lg){
+void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar cancion e implementacion
     char nom[150];
     char artist[31];
     char list[31];
