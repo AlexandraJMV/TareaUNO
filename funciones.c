@@ -266,8 +266,6 @@ De no existir la canción se debe mostrar un aviso por pantalla.*/
 cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
 
     cancion * aux_cancion = (cancion *) firstList(lista_can);
-
-    printf("Primera cancion en lista = %s, %s, %d\n\n", aux_cancion->nombre, aux_cancion->artista, aux_cancion->anyo);
     if (aux_cancion == NULL)
     {
         return NULL;
@@ -283,7 +281,11 @@ cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
                     printf("Existe el  anyo!\n");
                      return aux_cancion;
                 }
+                printf("Pero no parece ser de este anyo! \n");
+                break;
             }
+            printf("Pero no el  artista </3\n");
+            break;
         }
         else
             aux_cancion = (cancion *) nextList(lista_can);
@@ -355,6 +357,7 @@ void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_
         borrar_de_lista(aux_song);
         borrar_de_genero(aux_song);
         borrar_de_global(aux_song, l_gl);
+        l_gl->CantCanciones--;
         printf("Se ha eliminado la cancion seleccionada!\n\n");
     }
 }
@@ -463,7 +466,7 @@ listaGlobal * importar (char * nombre_archivo){
     {
         printf("nombre  genero : %s\n ", gen->NomGenero);
         gen = (generoC *) nextList(test->generos);
-    }*/
+    }
         // TEST IMPRESION DE INFORMACIONPOR GENERO
         generoC * test = (generoC *) firstList(gl_canciones->generos);
         int contador = 1;
@@ -481,8 +484,7 @@ listaGlobal * importar (char * nombre_archivo){
             printf("\n");
             contador++;
             test = (generoC *) nextList(gl_canciones->generos);
-        }
-
+        }*/
 
     fclose(arc_canciones);
     return gl_canciones;
