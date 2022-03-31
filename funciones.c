@@ -65,9 +65,10 @@ const char *get_csv_field (char * tmp, int k) {
     if(k==j) {
 
         i = i-1;
-        for (i ; tmp[i]!=  '\0' ; i++)
+       while(tmp[i]!=  '\0')
         {
             ret[i-ini_i] =  tmp[i];
+            i++;
         }
        ret[i-ini_i] = 0;
        return ret;
@@ -91,7 +92,7 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
         }
 
         if(open_mark || tmp[i]!= ','){
-            if(tmp[i]== ' ')
+            if(tmp[i]== ' ' && tmp[i-1]==',')
             {
                 ini_i++;
                 i++;
@@ -116,9 +117,10 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
     if(k==j) {
 
         i = i-1;
-        for (i ; tmp[i]!=  '\0' ; i++)
+        while( tmp[i]!=  '\0')
         {
             ret[i-ini_i] =  tmp[i];
+            i++;
         }
        ret[i-ini_i] = 0;
        return ret;
@@ -259,11 +261,12 @@ void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
     }
 }
 
-/*Eliminar cancion (char* Nombre, char* artista, int año): El usuario ingresa el nombre de
-una canción y la aplicación elimina la canción correspondiente de todas las listas de reproducción correspondientes.
-De no existir la canción se debe mostrar un aviso por pantalla.*/
+void agregar_cancion (char *nom, char * artista, int anyo, listaGlobal * lg){
+    return;
+}
 
 cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
+
 
     cancion * aux_cancion = (cancion *) firstList(lista_can);
     if (aux_cancion == NULL)
@@ -411,81 +414,149 @@ listaGlobal * importar (char * nombre_archivo){
         getc(arc_canciones);
     }
 
-    /*
-    // TEST IMPRESION DE INFORMACIONPOR GENERO
-        generoC * test = (generoC *) firstList(gl_canciones->generos);
-        int contador = 1;
-        while (test != NULL)
-        {
-            printf("%d - %s\n\n", contador, test->NomGenero);
-            cancion * test2 = (cancion *) firstList(test->canciones);
-            int cont2 = 1;
-            while(test2 != NULL)
-            {
-                printf("%d - %s\n",cont2, test2->nombre);
-                test2 = (cancion *) nextList(test->canciones);
-                cont2++;
-            }
-            printf("\n");
-            contador++;
-            test = (generoC *) nextList(gl_canciones->generos);
-        }
-    // TEST IMPRESION DE CANCIONES
-    cancion * test = (cancion *) firstList(gl_canciones->canciones);
-    while (test != NULL)
-    {
-        printf("%s\n\n", test->nombre);
-        test = (cancion *) nextList(gl_canciones->canciones);
-    }
-
-    //TEST IMPRESION DE  LISTAS
-    listaC * test = (listaC *) firstList(gl_canciones->listasExistentes);
-    while (test != NULL)
-    {
-        printf("%s, cantidad de canciones = %d", test->NomLista, test->cantidadCan);
-
-        cancion * test2= (cancion*)  firstList(test->canciones);
-        int cont = 1;
-        while (test2 != NULL){
-            printf("%d.  %s, %s, %d\n",  cont, test2->nombre, test2->artista, test2->anyo);
-            test2 = (cancion *) nextList(test->canciones);
-            cont++;
-        }
-        printf("\n\n");
-        test = (listaC *) nextList(gl_canciones->listasExistentes);
-    }
-
-    //TEST  INFO DE  GENEROS
-
-    cancion * test = firstList(gl_canciones->canciones);
-    test = nextList(gl_canciones->canciones);
-    printf("test = %s\n\n", test->nombre);
-
-    generoC * gen = firstList(test->generos);
-    while(gen != NULL)
-    {
-        printf("nombre  genero : %s\n ", gen->NomGenero);
-        gen = (generoC *) nextList(test->generos);
-    }
-        // TEST IMPRESION DE INFORMACIONPOR GENERO
-        generoC * test = (generoC *) firstList(gl_canciones->generos);
-        int contador = 1;
-        while (test != NULL)
-        {
-            printf("%d - %s\n\n", contador, test->NomGenero);
-            cancion * test2 = (cancion *) firstList(test->canciones);
-            int cont2 = 1;
-            while(test2 != NULL)
-            {
-                printf("%d - %s\n",cont2, test2->nombre);
-                test2 = (cancion *) nextList(test->canciones);
-                cont2++;
-            }
-            printf("\n");
-            contador++;
-            test = (generoC *) nextList(gl_canciones->generos);
-        }*/
-
     fclose(arc_canciones);
     return gl_canciones;
+}
+
+void elim_main_ver(listaGlobal * lg){
+    char nom[31];
+    char artist[31];
+    int year;
+
+    system("cls");
+    printf("\nIngrese el nombre, artista y anyo de la cancion a eliminar :\n");
+    printf("\nNombre :\n");
+    scanf("%[^\n]", nom);
+    getchar();
+
+    printf("\nArtista :\n");
+    scanf("%[^\n]", artist);
+    getchar();
+
+    printf("\nAnyo :\n");
+    scanf("%d", &year);
+    getchar();
+
+    printf("\nCancion seleccionada : %s, %s, %d\n\n", nom, artist, year);
+
+    eliminar_cancion(nom, artist, year, lg);
+
+    printf("---> Presione cualquier tecla para continuar\n");
+    getchar();
+    system("cls");
+}
+//
+void leer_agregar_main(listaGlobal  *  lg){
+    char nom[150];
+    char artist[31];
+    char list[31];
+    char gen[31];
+    char gens[100] = "";
+    char aux_gens[100] = "\"";
+    int aux_coma;
+    char year[10];
+
+    system("cls");
+    printf("\nIngrese el nombre, artista y anyo de la cancion a agregar :\n");
+    printf("Nombre :\n");
+    scanf("%[^\n]", nom);
+    getchar();
+
+    printf("\nArtista :\n");
+    scanf("%[^\n]", artist);
+    getchar();
+
+    printf("\nAnyo :\n");
+    scanf("%s", year);
+    getchar();
+
+    printf("\nIngrese a que generos pertenece su cancion ( y FIN cuando haya terminado!) :\n");
+    aux_coma = 0;
+    do{
+            scanf("%s", gen);
+            getchar();
+            if(strcmp(gen, "FIN") == 0) break;
+            if (aux_coma>0)
+                        strcat(gens, ", ");
+            aux_coma++;
+            strcat(gens, gen);
+            }while(1);
+        if(aux_coma > 1){
+            char comillas[2] = "\"";
+            strcat(gens, comillas);
+            strcat(aux_gens, gens);
+            printf("\nSu cancion es : %s,%s,%s,%s\n\n", nom, artist, aux_gens, year);
+        }
+        else
+            printf("\nSu cancion es : %s,%s,%s,%s\n\n", nom, artist, gens, year);
+
+        printf("Ingrese la lista de reproduccion a la que la desea agregar :\n");
+        scanf("%[^\n]", list);
+        getchar();
+
+        listaC* aux_lista = existe_Lista(lg , list);
+        if (aux_lista == NULL){
+            int resp = 0;
+            system("cls");
+            printf("Su lista no exite!\n\n Le gustaria crearla? (si = 1, no = 0)\n");
+            scanf("%d", &resp);
+            getchar();
+            if (resp == 0){
+                 system("cls");
+                return;
+            }
+            else{
+
+                    strcat(nom, ",");
+                    strcat(nom,artist);
+                    strcat(nom,",");
+                    if (aux_coma > 1) strcat(nom,aux_gens);
+                    else strcat(nom, gens);
+                    strcat(nom,",");
+                    strcat(nom,year);
+                    strcat(nom,",");
+                    strcat(nom,list);
+
+                    cancion * aux_song  = crear_cancion();
+
+                    printf("Su cancion es %s\n", nom);
+                    rellenar_cancion(aux_song, nom, lg);
+                    pushBack(lg->canciones, aux_song);
+                    lg->CantCanciones++;
+
+                    printf("\nSu lista se ha creado exitosamente!\n");
+                    printf("---> Presione cualquier tecla para continuar\n");
+                    getchar();
+                    system("cls");
+                    return;
+                }
+        }
+        else
+        {
+                cancion * rec_lista = (cancion *) firstList(aux_lista->canciones);
+
+                while(rec_lista != NULL){
+                    int aux = atoi(year);
+                    if(strcmp(nom, rec_lista->nombre) && strcmp(artist, rec_lista->artista) && rec_lista->anyo == aux )
+                    {
+                        system("cls");
+                        printf("Esta cancion ya existe!\n\n");
+                        printf("---> Presione cualquier tecla para continuar\n\n");
+                        getchar();
+                        system("cls");
+                        return;
+                    }
+                    rec_lista = (cancion *) nextList(aux_lista->canciones);
+                }
+                system("cls");
+                return;
+
+        }
+
+        system("cls");
+                //////
+        printf("Proceso terminado! Apriete cualquier  tecla para continuar.\n");
+        getchar();
+        system("cls");
+
 }

@@ -36,4 +36,10 @@ void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_
 
 void borrar_de_genero(cancion * song);
 
+void agregar_cancion (char *nom, char * artista, int anyo, listaGlobal * lg);
+
+void elim_main_ver(listaGlobal *  lg);
+
+void leer_agregar_main(listaGlobal * lg);
+
 #endif // FUNCIONES_H_INCLUDED
