@@ -6,7 +6,8 @@ Eliminar cancion semi funcional
   o despues, no se detectara como la misma (A pesar que se perciba como tal). 
   De igual forma la busqueda es extremadamente sensible a Mayusculas y minusculas.
 
-  *Soluciones*-> Funcion  que elimine espacios antes y despues de cadenas cuando se  ingrese cualquier cadena,
+  *Soluciones*
+                 Funcion  que elimine espacios antes y despues de cadenas cuando se  ingrese cualquier cadena,
                  tanto al importar canciones como al realizar busquedas.
                  
                  Cadena auxiliar dentro del struct de canciones (o un auxiliar temporal al buscar) completamente en mayusculas/minusculas. 
