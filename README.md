@@ -13,7 +13,13 @@ Eliminar cancion semi funcional
                  
                  Cadena auxiliar dentro del struct de canciones (o un auxiliar temporal al buscar) completamente en mayusculas/minusculas. 
                  Esto permitira una comparacion de cadenas sin que nos importe  tanto el detalle, agilizando la busqueda.
-                 
   
- ***RECORDATORIO***
- EN AGREGAR, CUANDO LA LISTA SE CAMBIA PARA UNA CANCION, ME FALTA ELIMINAR LA CANCION DE LA LISTA ANTERIOR.
+  Las funciones Eliminar cancion y agregar cancion deberian ser totalmente funcionales.
+  Importar canciones ES totalmente funcional, ARREGLADA la  lectura erronea de la primera cancion (a traves del uso de 3 fgetchar)
+  Compilar o usar algun IDE para testear, cualquier  problmea  con mis funciones me informan.
+  
+  ***OBSERVACIONES PARA FUTUROS REFINAMIENTOS***  
+  
+    > Borrar listas de reproduccion que tengan 0 canciones
+    > Borrar generos que tengan 0 canciones
+  
