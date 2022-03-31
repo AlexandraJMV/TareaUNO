@@ -200,6 +200,7 @@ generoC * existe_genero(char *genero, List *lista_gen){
 void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
     int i = 0;
     const char * aux_gen = get_csv_fieldV2(cad_generos, i);
+    song->generos = createList();
 
     do
     {
@@ -208,7 +209,7 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
         generoC * aux_existe = existe_genero((char *)aux_gen, list_gl->generos);
         if (aux_existe != NULL)
         {
-            pushBack(song->generos , aux_existe);
+            pushFront(song->generos , aux_existe);
             aux_existe->cantidadCan++;
             pushBack(aux_existe->canciones, song);
         }
@@ -225,8 +226,6 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
             aux->cantidadCan = 1;
             aux->canciones = createList();
             pushBack(aux->canciones, song);
-
-            song->generos = createList();
             pushBack(song->generos, aux);
             pushBack(list_gl->generos, aux);
         }
@@ -236,7 +235,6 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){
 }
 
 void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
-    //printf("%s\n", aux_cadena);
     for(int i = 0 ; i<5 ; i++)
     {
         const  char *aux  = get_csv_field(aux_cadena, i);
@@ -363,6 +361,11 @@ void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_
 
 cancion * crear_cancion(void){
     cancion * aux = (cancion *) malloc (sizeof(cancion));
+    if (aux == NULL)
+    {
+        perror("No se pudo crear la cancion auxiliar!\n");
+        exit(1);
+    }
     return aux;
 }
 
@@ -393,44 +396,15 @@ listaGlobal * importar (char * nombre_archivo){
     gl_canciones->canciones = createList();
     gl_canciones->listasExistentes = createList();
     gl_canciones->generos = createList();
-/*
-        aux_song = (cancion *) malloc( sizeof(cancion) );
-        if (aux_song == NULL)
-        {
-            perror("Error al reservar memoria para auxiliar");
-            exit(1);
-        }
-        aux_song->anyo = 0;*/
 
     // Lectura detalles y rellenado de campos a traves de funcion
-   //cancion aux_song; int a;
     while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
     {
-        cancion * aux_song= NULL;
-        &aux_song = crear_cancion();
-        printf("DIRECCION DE MEMORIA DE SONG : %p\n", &aux_song);
-        /*
-        //printf("ANTES DE AGREGAR = %s\n", aux_cadena);
-        rellenar_cancion(&aux_song, aux_cadena, gl_canciones);
-        //printf("LUEGO DE AGREGAR = %s, %s, %d\n", aux_song->nombre, aux_song->artista, aux_song->anyo);
+        cancion * aux_song = crear_cancion();
+        rellenar_cancion(aux_song, aux_cadena, gl_canciones);
         gl_canciones->CantCanciones ++;
-        pushBack(gl_canciones->canciones, &aux_song);
+        pushBack(gl_canciones->canciones, aux_song);
 
-        if(gl_canciones->CantCanciones == 1){
-                    cancion * auxxx = (cancion *) lastList(gl_canciones->canciones);
-                    printf("IMPRESION DEL ULTIMO GUARDADO\n");
-                    printf("%s\n\n", auxxx->nombre);
-
-                    auxxx = (cancion *) prevList(gl_canciones->canciones);
-                    printf("IMPRESION DEL ANTERIOR GUARDADO\n");
-                    printf("%s\n\n", auxxx->nombre);
-
-
-                    auxxx = (cancion *) nextList(gl_canciones->canciones);
-                    auxxx = (cancion *) nextList(gl_canciones->canciones);
-                    printf("IMPRESION DEL SIGUIENTE GUARDADO\n");
-                    printf("%s\n\n", auxxx->nombre);
-        }*/
         getc(arc_canciones);
     }
 
@@ -441,11 +415,63 @@ listaGlobal * importar (char * nombre_archivo){
         while (test != NULL)
         {
             printf("%d - %s\n\n", contador, test->NomGenero);
-
             cancion * test2 = (cancion *) firstList(test->canciones);
             int cont2 = 1;
+            while(test2 != NULL)
+            {
+                printf("%d - %s\n",cont2, test2->nombre);
+                test2 = (cancion *) nextList(test->canciones);
+                cont2++;
+            }
+            printf("\n");
+            contador++;
+            test = (generoC *) nextList(gl_canciones->generos);
+        }
+    // TEST IMPRESION DE CANCIONES
+    cancion * test = (cancion *) firstList(gl_canciones->canciones);
+    while (test != NULL)
+    {
+        printf("%s\n\n", test->nombre);
+        test = (cancion *) nextList(gl_canciones->canciones);
+    }
 
+    //TEST IMPRESION DE  LISTAS
+    listaC * test = (listaC *) firstList(gl_canciones->listasExistentes);
+    while (test != NULL)
+    {
+        printf("%s, cantidad de canciones = %d", test->NomLista, test->cantidadCan);
 
+        cancion * test2= (cancion*)  firstList(test->canciones);
+        int cont = 1;
+        while (test2 != NULL){
+            printf("%d.  %s, %s, %d\n",  cont, test2->nombre, test2->artista, test2->anyo);
+            test2 = (cancion *) nextList(test->canciones);
+            cont++;
+        }
+        printf("\n\n");
+        test = (listaC *) nextList(gl_canciones->listasExistentes);
+    }
+
+    //TEST  INFO DE  GENEROS
+
+    cancion * test = firstList(gl_canciones->canciones);
+    test = nextList(gl_canciones->canciones);
+    printf("test = %s\n\n", test->nombre);
+
+    generoC * gen = firstList(test->generos);
+    while(gen != NULL)
+    {
+        printf("nombre  genero : %s\n ", gen->NomGenero);
+        gen = (generoC *) nextList(test->generos);
+    }*/
+        // TEST IMPRESION DE INFORMACIONPOR GENERO
+        generoC * test = (generoC *) firstList(gl_canciones->generos);
+        int contador = 1;
+        while (test != NULL)
+        {
+            printf("%d - %s\n\n", contador, test->NomGenero);
+            cancion * test2 = (cancion *) firstList(test->canciones);
+            int cont2 = 1;
             while(test2 != NULL)
             {
                 printf("%d - %s\n",cont2, test2->nombre);
@@ -457,22 +483,7 @@ listaGlobal * importar (char * nombre_archivo){
             test = (generoC *) nextList(gl_canciones->generos);
         }
 
-    cancion * test = (cancion *) firstList(gl_canciones->canciones);
-
-    while (test != NULL)
-    {
-        printf("%s\n\n", test->nombre);
-        test = (cancion *) nextList(gl_canciones->canciones);
-    }
-
-
-    cancion * test = (cancion *) firstList(gl_canciones->canciones);
-    cancion * test2 = (cancion *)  nextList(gl_canciones->canciones);
-    strcat(test->nombre, "abcd");
-    printf("\nPRIMER y SEGUNDO ELEMENTO DE LA LISTA:\n");
-    printf("%s, %s\n\n", test->nombre, test2->nombre);*/
 
     fclose(arc_canciones);
-    //free(aux_song);
     return gl_canciones;
 }

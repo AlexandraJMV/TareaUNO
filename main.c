@@ -48,11 +48,9 @@ int main()
         printf("\n\n\n\n\n\n\n\n\n\n");
     }
 
-    listaGlobal *L_Global = (listaGlobal *) malloc (sizeof(listaGlobal));
-    L_Global = importar("Canciones.csv");
+    listaGlobal *L_Global = importar("Canciones.csv");
 
-    printf("%d\n", L_Global->CantCanciones);
-/*
+    /*
     // TEST IMPRESION CANCIONES EN LISTA GLOIBAL
     cancion * test = (cancion *) firstList(L_Global->canciones);
 
@@ -61,9 +59,6 @@ int main()
         printf("%s\n\n", test->nombre);
         test = (cancion *) nextList(L_Global->canciones);
     }*/
-
-
-
 
     while(1)
     {
@@ -130,6 +125,8 @@ int main()
                 getchar();
 
                 printf("Cancion seleccionada : %s, %s, %d\n\n", nom, artist, year);
+
+                eliminar_cancion(nom, artist, year, L_Global);
 
                 printf("\n\n");
                 break;

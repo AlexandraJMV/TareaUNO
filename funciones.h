@@ -16,7 +16,7 @@ const char *get_csv_fieldV2 (char * tmp, int k);
 
 void  rellenar_info_cancion(cancion * cancion, char info[150]);
 
-void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * gbl_list);
+void rellenar_cancion(cancion *song, char * aux_cadena, listaGlobal * gbl_list);
 
 const char *get_csv_field (char * tmp, int k);
 
@@ -35,7 +35,5 @@ void borrar_de_lista(cancion * song);
 void eliminar_cancion(char * nombre, char * artista, int anyo, listaGlobal  * l_gl);
 
 void borrar_de_genero(cancion * song);
-
-cancion *crear_cancion(void);
 
 #endif // FUNCIONES_H_INCLUDED
