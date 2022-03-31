@@ -26,4 +26,5 @@ Eliminar cancion semi funcional
   
     > Borrar listas de reproduccion que tengan 0 canciones
     > Borrar generos que tengan 0 canciones
+    > La cancion  YOU BELONG WITH ME de Taylor Swift se guarda mal.
   
