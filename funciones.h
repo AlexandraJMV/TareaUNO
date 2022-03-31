@@ -42,4 +42,6 @@ void elim_main_ver(listaGlobal *  lg);
 
 void leer_agregar_main(listaGlobal * lg);
 
+void concat_song(char *nom, char * artist,  char * gens,  char * year, char * lista);
+
 #endif // FUNCIONES_H_INCLUDED

@@ -446,6 +446,17 @@ void elim_main_ver(listaGlobal * lg){
     system("cls");
 }
 //
+void concat_song(char *nom, char * artist,  char * gens,  char * year, char * list){
+    strcat(nom, ",");
+    strcat(nom,artist);
+    strcat(nom,",");
+    strcat(nom, gens);
+    strcat(nom,",");
+    strcat(nom,year);
+    strcat(nom,",");
+    strcat(nom,list);
+}
+
 void leer_agregar_main(listaGlobal  *  lg){
     char nom[150];
     char artist[31];
@@ -473,7 +484,7 @@ void leer_agregar_main(listaGlobal  *  lg){
     printf("\nIngrese a que generos pertenece su cancion ( y FIN cuando haya terminado!) :\n");
     aux_coma = 0;
     do{
-            scanf("%s", gen);
+            scanf("%[^\n]", gen);
             getchar();
             if(strcmp(gen, "FIN") == 0) break;
             if (aux_coma>0)
@@ -494,69 +505,80 @@ void leer_agregar_main(listaGlobal  *  lg){
         scanf("%[^\n]", list);
         getchar();
 
-        listaC* aux_lista = existe_Lista(lg , list);
-        if (aux_lista == NULL){
-            int resp = 0;
-            system("cls");
-            printf("Su lista no exite!\n\n Le gustaria crearla? (si = 1, no = 0)\n");
-            scanf("%d", &resp);
-            getchar();
-            if (resp == 0){
-                 system("cls");
-                return;
-            }
-            else{
 
-                    strcat(nom, ",");
-                    strcat(nom,artist);
-                    strcat(nom,",");
-                    if (aux_coma > 1) strcat(nom,aux_gens);
-                    else strcat(nom, gens);
-                    strcat(nom,",");
-                    strcat(nom,year);
-                    strcat(nom,",");
-                    strcat(nom,list);
+        // MEJOR BUSCAR  POR CANCION
+        cancion * aux_song = existe_cancion(nom, artist, atoi(year), lg->canciones);
+        if (aux_song == NULL)
+        {
+                    if (aux_coma > 1)
+                        concat_song(nom, artist, aux_gens, year, list);
+                    else concat_song(nom, artist, gens, year, list);
 
-                    cancion * aux_song  = crear_cancion();
-
-                    printf("Su cancion es %s\n", nom);
-                    rellenar_cancion(aux_song, nom, lg);
-                    pushBack(lg->canciones, aux_song);
+                    cancion * new_song = crear_cancion();
+                    rellenar_cancion(new_song, nom, lg);
+                    pushBack(lg->canciones, new_song);
                     lg->CantCanciones++;
 
-                    printf("\nSu lista se ha creado exitosamente!\n");
+                    printf("\nSu cancion se ha guardado exitosamente!\n");
+                    printf("---> Presione cualquier tecla para continuar\n");
+                    getchar();
+                    system("cls");
+        }
+        else
+        {
+            listaC * rec_listas = existe_Lista(lg, list);
+            if(rec_listas == NULL)
+            {
+                int eleccion = 1;
+                printf("\nSu lista no existe! Desea crearla? (yes = 1, no = 0)\n");
+                scanf("%d", &eleccion);
+                getchar();
+
+                if (eleccion == 0){
+                    system("cls");
+                    printf("Proceso terminado! Apriete cualquier  tecla para continuar.\n");
+                    getchar();
+                    system("cls");
+                    return;
+                }
+
+                listaC * new_lista = (listaC *) malloc (sizeof(listaC));
+                new_lista->canciones = createList();
+                strcpy(new_lista->NomLista, list);
+                new_lista->cantidadCan = 1;
+
+                pushBack(new_lista->canciones, aux_song);
+                pushBack(lg->listasExistentes, new_lista);
+                aux_song->lista = new_lista;
+
+                system("cls");
+                printf("\nSu lista se ha creado exitosamente!\n");
+                printf("---> Presione cualquier tecla para continuar\n");
+                getchar();
+                system("cls");
+
+            }
+            else
+            {
+                if (strcmp(aux_song->lista->NomLista, list) == 0)
+                {
+                system("cls");
+                printf("\nEsta cancion ya pertenece a la lista!\n");
+                printf("---> Presione cualquier tecla para continuar\n");
+                getchar();
+                system("cls");
+                return;
+                }
+                else
+                {
+                    aux_song->lista = rec_listas;
+                    system("cls");
+                    printf("\nSu cancion se ha guardado exitosamente!\n");
                     printf("---> Presione cualquier tecla para continuar\n");
                     getchar();
                     system("cls");
                     return;
                 }
+            }
         }
-        else
-        {
-                cancion * rec_lista = (cancion *) firstList(aux_lista->canciones);
-
-                while(rec_lista != NULL){
-                    int aux = atoi(year);
-                    if(strcmp(nom, rec_lista->nombre) && strcmp(artist, rec_lista->artista) && rec_lista->anyo == aux )
-                    {
-                        system("cls");
-                        printf("Esta cancion ya existe!\n\n");
-                        printf("---> Presione cualquier tecla para continuar\n\n");
-                        getchar();
-                        system("cls");
-                        return;
-                    }
-                    rec_lista = (cancion *) nextList(aux_lista->canciones);
-                }
-                system("cls");
-                return;
-
-        }
-
-        system("cls");
-                //////
-        printf("Proceso terminado! Apriete cualquier  tecla para continuar.\n");
-        getchar();
-        system("cls");
-
 }
