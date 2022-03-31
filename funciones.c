@@ -508,6 +508,8 @@ void leer_agregar_main(listaGlobal  *  lg){
 
         // MEJOR BUSCAR  POR CANCION
         cancion * aux_song = existe_cancion(nom, artist, atoi(year), lg->canciones);
+
+        // NO EXISTE LA CANCION
         if (aux_song == NULL)
         {
                     if (aux_coma > 1)
@@ -524,9 +526,11 @@ void leer_agregar_main(listaGlobal  *  lg){
                     getchar();
                     system("cls");
         }
+        // SI EXISTE LA CANCION
         else
         {
             listaC * rec_listas = existe_Lista(lg, list);
+            // NO EXISTE LA LISTA
             if(rec_listas == NULL)
             {
                 int eleccion = 1;
@@ -549,6 +553,7 @@ void leer_agregar_main(listaGlobal  *  lg){
 
                 pushBack(new_lista->canciones, aux_song);
                 pushBack(lg->listasExistentes, new_lista);
+                borrar_de_lista(aux_song);
                 aux_song->lista = new_lista;
 
                 system("cls");
@@ -558,6 +563,7 @@ void leer_agregar_main(listaGlobal  *  lg){
                 system("cls");
 
             }
+            // SI EXISTE  LA LISTA
             else
             {
                 if (strcmp(aux_song->lista->NomLista, list) == 0)
@@ -569,9 +575,12 @@ void leer_agregar_main(listaGlobal  *  lg){
                 system("cls");
                 return;
                 }
+                // LA CANCION NO PERTENECE A LA LISTA
                 else
                 {
+                    borrar_de_lista(aux_song);
                     aux_song->lista = rec_listas;
+                    pushBack(rec_listas->canciones, aux_song);
                     system("cls");
                     printf("\nSu cancion se ha guardado exitosamente!\n");
                     printf("---> Presione cualquier tecla para continuar\n");
