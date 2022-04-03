@@ -44,4 +44,14 @@ void leer_agregar_main(listaGlobal * lg);
 
 void concat_song(char *nom, char * artist,  char * gens,  char * year, char * lista);
 
+
+void Buscar_gen (char* gen, listaGlobal* lg);
+
+void formato(char * str, char * strend);
+
+cancion * existe_nombre(char *nom_can, List *lista_nom);
+
+void Buscar_nom (char* busqueda, listaGlobal* Global);
+
+
 #endif // FUNCIONES_H_INCLUDED

@@ -4,28 +4,32 @@
 #include "list.h"
 #include "funciones.h"
 
+void LimpiarPantalla(){
+    printf("\n\n\n\n\n\n\n\n\n\n");
+}
+
 int main()
 {
-    printf("Spotify Clone\n\n");
     char str[100];
     char *ptrStr;
     int seleccionado;
     int selec2;
 
-    void LimpiarPantalla(){
-        printf("\n\n\n\n\n\n\n\n\n\n");
-        printf("\n\n\n\n\n\n\n\n\n\n");
-    }
-
-    listaGlobal *L_Global = importar("Canciones.csv");
+    listaGlobal *L_Global;
 
     while(1)
     {
+        char hola[100];
+        system("cls");
+        printf("Spotify Clone\n\n");
         printf("1. Buscar\n"); //nombre, artistra y genero
         printf("2. Agregar\n");// solo cancion
         printf("3. Eliminar\n");// solo cancion
         printf("4. Mostrar\n");//cancion, nombres, lista de reproduccion
-        printf("5. Salir\n\n");
+        printf("5. Importar\n");
+        printf("6. Exportar\n");
+        printf("7. Salir\n\n");
+
         printf("Ingresa lo que deseas hacer:  ");
         scanf("%d",&seleccionado);
         getchar();
@@ -33,35 +37,38 @@ int main()
         switch(seleccionado)
         {
             case 1:
-                LimpiarPantalla();
+                system("cls");
                 printf("1. Nombre\n");
                 printf("2. Artista\n");
                 printf("3. Genero\n");
                 printf("Ingresa parametro de busqueda:  ");
                 scanf("%d",&selec2);
+                getchar();
                 switch(selec2){
                     case 1:
-                    LimpiarPantalla();
-                    printf("Ingrese Nombre: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    system("cls");
+                    printf("Ingrese nombre: ");
+                    scanf("%[^\n]", hola);
+                    getchar();
+                    Buscar_nom (hola, L_Global);
                     break;
                     ////
                     case 2:
-                    LimpiarPantalla();
-                     printf("Ingrese Artista: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    system("cls");
+                    printf("Ingrese artista: ");
+                    scanf("%[^\n]", hola);
+                    getchar();
+                    Buscar_nom (hola, L_Global);
                     break;
                     ////
                     case 3:
-                    LimpiarPantalla();
+                    system("cls");
                     printf("Ingrese Genero: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    scanf("%s",hola);
+                    getchar();
+                    Buscar_gen (hola, L_Global);
                     break;
                 }
-
                 break;
 
             case 2:
@@ -73,29 +80,30 @@ int main()
                 break;
 
             case 4:
-               LimpiarPantalla();
+                system("cls");
                 printf("1. Cancion\n");
                 printf("2. Nombres\n");
                 printf("3. Lista de reproduccion\n");
                 printf("Ingresa parametro para mostrar:  ");
                 scanf("%d",&selec2);
+                getchar();
                 switch(selec2){
                     case 1:
-                    LimpiarPantalla();
+                    system("cls");
                     printf("Ingrese Cancion: ");
                     fgets(str,100,stdin );
                     ptrStr=str;
                     break;
                     ////
                     case 2:
-                    LimpiarPantalla();
+                    system("cls");
                      printf("Ingrese Nombre: ");
                     fgets(str,100,stdin );
                     ptrStr=str;
                     break;
                     ////
                     case 3:
-                    LimpiarPantalla();
+                    system("cls");
                     printf("Ingrese Lista de rep: ");
                     fgets(str,100,stdin );
                     ptrStr=str;
@@ -103,12 +111,37 @@ int main()
                 }
                 break;
             case 5:
-                LimpiarPantalla();
-                printf("Saliendo del programa");
-                exit(0);
+                system("cls");
+
+                printf("Ingrese el nombre del archivo que desea importar!\n");
+                printf("Ejemplo : Archivo.csv\n\n");
+
+                scanf("%s", hola);
+                getchar();
+
+                L_Global = importar(hola);
+                printf("Canciones importadas exitosamente!\n");
+                printf("-->Presione enter para continuar\n");
+                getchar();
+
+                system("cls");
+                break;
+            case 6:
+                system("cls");
+                printf("Funcion no disponible\n");
+                getchar();
+                break;
+            case 7:
+                system("cls");
+                printf("Saliendo del programa...\n\n");
+                return 0;
+                system("cls");
                 break;
         }
+        
     }
 
     return 0;
 }
+
+

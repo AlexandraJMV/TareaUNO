@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "funciones.h"
 #include "list.h"
+#define MAX_CHAR 40
+#define MAX_CHAR_GENS 50
+
 
 typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre,artista,genero,año y a la lista que pertenece.
-    char nombre[31];
-    char artista[31];
+    char nombre[MAX_CHAR];
+    char artista[MAX_CHAR];
     List* generos;
     int anyo;
     listaC * lista;
@@ -15,7 +19,7 @@ typedef struct cancion{ //Estructura de las canciones del archivo con su: nombre
 typedef struct listaC{ //Estructura de las listas de canciones indica: Cantidad de canciones, las canciones , y nombre de la lista (segun archivo).
     size_t cantidadCan;
     List* canciones;
-    char NomLista[31];
+    char NomLista[MAX_CHAR];
 }listaC;
 
 typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas las canciones del archivo.
@@ -28,7 +32,7 @@ typedef struct listaGlobal{ //Estructura de la lista "Global" que almacena todas
 typedef struct generoC{ // Estructura de  los generos indiza: Cantidad, canciones  pertenecientes al genero y el nombre del mismo.
     size_t cantidadCan;
     List* canciones;
-    char NomGenero[31];
+    char NomGenero[MAX_CHAR];
 }generoC;
 
 const char *get_csv_field (char * tmp, int k) {
@@ -131,12 +135,16 @@ const char *get_csv_fieldV2 (char * tmp, int k) {
 
 listaC* existe_Lista(listaGlobal * list_gl, const char *str_lista){ // Comprueba exitencia de una lista de reproduccion en la lista global
     listaC * aux_lista = (listaC *) firstList(list_gl->listasExistentes);
+    char nom_lista[MAX_CHAR], buscar_lista[MAX_CHAR];
+
+    formato((char *)str_lista, buscar_lista);
 
     if (aux_lista == NULL) return NULL;
 
     for (int i = 0 ; aux_lista != NULL ; i++)
     {
-        if (strcmp(aux_lista->NomLista, str_lista) == 0)
+        formato(aux_lista->NomLista,nom_lista);
+        if (strcmp(buscar_lista, nom_lista) == 0)
         {
             return aux_lista;
         }
@@ -183,6 +191,9 @@ void agregar_lista(const char * str_lista,  cancion * song, listaGlobal * list_g
 
 generoC * existe_genero(char *genero, List *lista_gen){ // Comprueba existencia de un genero en la lista global
     generoC * aux_genero= (generoC *) firstList(lista_gen);
+    char nom_genero[MAX_CHAR], genero_busc[MAX_CHAR];
+
+    formato(genero, genero_busc);
 
     if (aux_genero == NULL)
     {
@@ -190,10 +201,13 @@ generoC * existe_genero(char *genero, List *lista_gen){ // Comprueba existencia 
     }
     while(aux_genero != NULL)
     {
-        if(strcmp(aux_genero->NomGenero, genero) == 0)
+
+        formato(aux_genero->NomGenero, nom_genero);
+        if(strcmp(nom_genero, genero_busc) == 0)
         {
             return aux_genero;
         }
+
         aux_genero = (generoC *) nextList(lista_gen);
     }
     return NULL;
@@ -211,7 +225,7 @@ void agregar_genero(cancion * song, char * cad_generos, listaGlobal * list_gl){ 
         generoC * aux_existe = existe_genero((char *)aux_gen, list_gl->generos);
         if (aux_existe != NULL)
         {
-            pushFront(song->generos , aux_existe);
+            pushBack(song->generos , aux_existe);
             aux_existe->cantidadCan++;
             pushBack(aux_existe->canciones, song);
         }
@@ -264,6 +278,12 @@ void rellenar_cancion(cancion * song, char * aux_cadena, listaGlobal * list_gl){
 cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){ // Comprueba existencia de una cancion en la lista global
 
 
+    char nom_en_lista[MAX_CHAR], nom_buscar[MAX_CHAR];
+    char art_en_lista[MAX_CHAR], art_buscar[MAX_CHAR];
+
+    formato(song, nom_buscar);
+    formato(artista, art_buscar);
+
     cancion * aux_cancion = (cancion *) firstList(lista_can);
     if (aux_cancion == NULL)
     {
@@ -271,15 +291,21 @@ cancion * existe_cancion(char *song, char * artista, int anyo, List *lista_can){
     }
     while(aux_cancion != NULL)
     {
-        //printf("Comparando %s y %s\n\n", aux_cancion->nombre, song);
-        if(strcmp(aux_cancion->nombre, song) == 0){
+        formato(aux_cancion->nombre, nom_en_lista);
+
+        if(strcmp(nom_en_lista, nom_buscar) == 0){
+            
             printf("Existe el nombre!\n");
-            if (strcmp(aux_cancion->artista, artista) == 0){
+            formato(aux_cancion->artista, art_en_lista);
+
+            if (strcmp(art_buscar, art_en_lista) == 0){
+
                 printf("Existe el artista!\n");
                 if(aux_cancion->anyo ==  anyo){
                     printf("Existe el  anyo!\n");
                      return aux_cancion;
                 }
+
                 printf("Pero no parece ser de este anyo! \n");
                 break;
             }
@@ -374,7 +400,7 @@ listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desd
     // Variables a utilizar
     FILE * arc_canciones;
     listaGlobal * gl_canciones;
-    char aux_cadena[150] ="";
+    char aux_cadena[MAX_CHAR*5] ="";
 
     // Abrir archivo
     arc_canciones = fopen(nombre_archivo, "rt");
@@ -403,7 +429,7 @@ listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desd
     getc(arc_canciones);
     getc(arc_canciones);
 
-    while(fscanf(arc_canciones,"%150[^\n]", aux_cadena) != EOF)
+    while(fscanf(arc_canciones,"%300[^\n]", aux_cadena) != EOF)
     {
         cancion * aux_song = crear_cancion();
         rellenar_cancion(aux_song, aux_cadena, gl_canciones);
@@ -418,8 +444,8 @@ listaGlobal * importar (char * nombre_archivo){ // Importacion de canciones desd
 }
 
 void elim_main_ver(listaGlobal * lg){ // Impresion de mensajes  para recibir imput al eliminar cancion, llamada a funcion eliminar
-    char nom[31];
-    char artist[31];
+    char nom[MAX_CHAR];
+    char artist[MAX_CHAR];
     int year;
 
     system("cls");
@@ -436,11 +462,11 @@ void elim_main_ver(listaGlobal * lg){ // Impresion de mensajes  para recibir imp
     scanf("%d", &year);
     getchar();
 
-    printf("\nCancion seleccionada : %s, %s, %d\n\n", nom, artist, year);
+    printf("\nCancion seleccionada :\n| %s | %s | %d |\n\n", nom, artist, year);
 
     eliminar_cancion(nom, artist, year, lg);
 
-    printf("---> Presione cualquier tecla para continuar\n");
+    printf("---> Presione enter para continuar\n");
     getchar();
     system("cls");
 }
@@ -457,18 +483,19 @@ void concat_song(char *nom, char * artist,  char * gens,  char * year, char * li
 }
 
 void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar cancion e implementacion
-    char nom[150];
-    char artist[31];
-    char list[31];
-    char gen[31];
-    char gens[100] = "";
-    char aux_gens[100] = "\"";
+    char nom[300];
+    char artist[MAX_CHAR];
+    char list[MAX_CHAR];
+    char gen[MAX_CHAR];
+    char gens[MAX_CHAR_GENS] = "";
+    char aux_gens[MAX_CHAR_GENS] = "\"";
     int aux_coma;
     char year[10];
+    char nom_list[MAX_CHAR], busc_list[MAX_CHAR];
 
     system("cls");
     printf("\nIngrese el nombre, artista y anyo de la cancion a agregar :\n");
-    printf("Nombre :\n");
+    printf("\nNombre :\n");
     scanf("%[^\n]", nom);
     getchar();
 
@@ -480,7 +507,7 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
     scanf("%s", year);
     getchar();
 
-    printf("\nIngrese a que generos pertenece su cancion ( y FIN cuando haya terminado!) :\n");
+    printf("\nIngrese uno a uno los generos a los cuales pertenece su cancion ( y FIN cuando haya terminado)! :\n");
     aux_coma = 0;
     do{
             scanf("%[^\n]", gen);
@@ -495,10 +522,10 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
             char comillas[2] = "\"";
             strcat(gens, comillas);
             strcat(aux_gens, gens);
-            printf("\nSu cancion es : %s,%s,%s,%s\n\n", nom, artist, aux_gens, year);
+            printf("\nSu cancion es : \n| %s | %s | %s | %s |\n\n", nom, artist, aux_gens, year);
         }
         else
-            printf("\nSu cancion es : %s,%s,%s,%s\n\n", nom, artist, gens, year);
+            printf("\nSu cancion es : \n| %s | %s | %s | %s |\n\n", nom, artist, gens, year);
 
         printf("Ingrese la lista de reproduccion a la que la desea agregar :\n");
         scanf("%[^\n]", list);
@@ -520,8 +547,8 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
                     pushBack(lg->canciones, new_song);
                     lg->CantCanciones++;
 
-                    printf("\nSu cancion se ha guardado exitosamente!\n");
-                    printf("---> Presione cualquier tecla para continuar\n");
+                    printf("\nSu cancion era nueva! Se ha creado y guardado exitosamente!\n");
+                    printf("---> Presione enter para continuar\n");
                     getchar();
                     system("cls");
         }
@@ -539,7 +566,7 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
 
                 if (eleccion == 0){
                     system("cls");
-                    printf("Proceso terminado! Apriete cualquier  tecla para continuar.\n");
+                    printf("Proceso terminado! Apriete enter para continuar.\n");
                     getchar();
                     system("cls");
                     return;
@@ -557,7 +584,7 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
 
                 system("cls");
                 printf("\nSu lista se ha creado exitosamente!\n");
-                printf("---> Presione cualquier tecla para continuar\n");
+                printf("---> Presione enter para continuar\n");
                 getchar();
                 system("cls");
 
@@ -565,11 +592,13 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
             // SI EXISTE  LA LISTA
             else
             {
-                if (strcmp(aux_song->lista->NomLista, list) == 0)
+                formato(aux_song->lista->NomLista, nom_list);
+                formato(list, busc_list);
+                if (strcmp(nom_list, busc_list) == 0)
                 {
                 system("cls");
                 printf("\nEsta cancion ya pertenece a la lista!\n");
-                printf("---> Presione cualquier tecla para continuar\n");
+                printf("---> Presione enter para continuar\n");
                 getchar();
                 system("cls");
                 return;
@@ -577,16 +606,131 @@ void leer_agregar_main(listaGlobal  *  lg){ // Mensajes para imput de agregar ca
                 // LA CANCION NO PERTENECE A LA LISTA
                 else
                 {
+
                     borrar_de_lista(aux_song);
                     aux_song->lista = rec_listas;
                     pushBack(rec_listas->canciones, aux_song);
                     system("cls");
                     printf("\nSu cancion se ha guardado exitosamente!\n");
-                    printf("---> Presione cualquier tecla para continuar\n");
+                    printf("---> Presione enter para continuar\n");
                     getchar();
                     system("cls");
                     return;
                 }
             }
         }
+}
+
+void Buscar_gen (char* busqueda, listaGlobal* Global){
+    cancion* aux2;
+    generoC* aux;
+    generoC * aux3;
+    int num_cant;
+
+    aux= (generoC *)existe_genero(busqueda, Global -> generos);
+
+    if (aux == NULL)
+    {
+        printf("%s NO se encuentra en lista de Generos.\n",busqueda);
+        getchar();
+    }
+    else
+    {
+        num_cant = aux -> cantidadCan;
+        aux2 = (cancion * ) firstList(aux -> canciones);
+
+        printf("%s SI se encuentra en lista de Generos.\n\n",aux->NomGenero);
+        printf("Lista de canciones del genero\n\n");
+        printf("Nombre/Artista/Anyo                      Lista/Generos\n");
+        printf("---------------------------------------------------------------------------\n");
+        for( int i = 0; i < num_cant; i++)
+        {
+            printf("%-41s| %-31s\n",aux2 -> nombre, aux2->lista->NomLista);
+            printf("%-31s", aux2->artista);
+            printf("%9d |",aux2 -> anyo);
+
+            aux3 = (generoC*) firstList(aux2 -> generos);
+            while (aux3 != NULL)
+            {
+                printf(" %s",aux3->NomGenero);
+                aux3 = (generoC*) nextList(aux2 -> generos);
+            }
+            printf("\n                                         |                               \n");
+
+            aux2 = (cancion*) nextList(aux -> canciones);
+        }
+        printf("-------------------------------------------------------------------------------------\n");
+        printf("\nCanciones del genero impresas! Presione enter para continuar\n");
+        getchar();
+
+    }
+}
+
+// Funcion para Facilitar la comparacion de dos cadenas (Transforma a mayusculas y elimina espacios al inicio y final de la cadena)
+void formato(char * str, char * strend){
+
+    int ind = 0;
+
+    for (int i = 0 ; str[i] != '\0' ; i++)
+    {
+        if (isspace(str[i])){
+            continue;
+        }
+        else
+        {
+            strend[ind] = toupper(str[i]);
+            ind ++;
+        }
+    }
+    strend[ind] = '\0';
+}   
+
+void Buscar_nom (char* busqueda, listaGlobal* Global)
+{
+    cancion* aux;
+    generoC * aux2;
+    aux  = existe_nombre (busqueda, Global -> canciones );
+    if (aux == NULL)
+    {
+        printf("%s. NO se encuentra en lista de Canciones.\n",busqueda);
+    }
+    else
+    {
+        printf("%s. SI se encuentra en lista de Canciones.\n",busqueda);
+        printf("%s, %s, ",aux -> nombre, aux -> artista);
+        
+        aux2 = (generoC *) firstList(aux -> generos);
+        while (aux2 != NULL)
+        {
+            printf(" %s", aux2->NomGenero);
+            aux2 = (generoC*) nextList(aux -> generos);
+        }
+        printf(" ,%d, %s\n", aux -> anyo, aux -> lista -> NomLista);
+    }
+
+    printf("\n--> Ingrese enter para continuar\n");
+    getchar();
+}
+
+
+cancion* existe_nombre(char *nom_can, List *lista_nom){ 
+    char aux_nom[40], aux_list[40];
+    cancion * aux_nombre= (cancion *) firstList(lista_nom);
+
+    formato(nom_can, aux_nom);
+
+    if (aux_nombre == NULL)
+    {
+        return NULL;
+    }
+    while(aux_nombre != NULL)
+    {
+        formato(aux_nombre->nombre, aux_list);
+        if(strcmp(aux_nom, aux_list) == 0)
+        {
+            return aux_nombre;
+        }
+        aux_nombre = (cancion *) nextList(lista_nom);
+    }
+    return NULL;
 }
