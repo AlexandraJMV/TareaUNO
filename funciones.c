@@ -714,7 +714,7 @@ void Buscar_nom (char* busqueda, listaGlobal* Global)
 
 
 cancion* existe_nombre(char *nom_can, List *lista_nom){ 
-    char aux_nom[40], aux_list[40];
+    char aux_nom[MAX_CHAR], aux_list[MAX_CHAR];
     cancion * aux_nombre= (cancion *) firstList(lista_nom);
 
     formato(nom_can, aux_nom);
@@ -798,4 +798,73 @@ void mostrar_una_lista(char * nom_lista, listaGlobal * lg){
     printf("--> Presione enter para continuar\n");
     getchar();
 
+}
+
+void Buscar_art (char* busqueda, listaGlobal* Global)
+{
+    cancion* aux;
+    cancion* aux2;
+    generoC* aux3;
+    aux= existe_artista(busqueda, Global -> canciones);
+    aux2=(cancion*)firstList(Global -> canciones);
+    char aux_nom[MAX_CHAR], aux_en_lista[MAX_CHAR];
+    formato(busqueda, aux_nom);
+
+    if (aux == NULL)
+    {
+        printf("%s. NO se encuentra.\n",aux->artista);
+    }
+    else
+    {
+        printf("%s. SI se encuentra.\n\n",aux->artista);
+
+        printf("---------------------------------------------------------------------------\n");
+        while (aux2 != NULL)
+        {
+            formato(aux2->artista, aux_en_lista);
+            if (strcmp(aux_nom,aux_en_lista)== 0)
+            {
+                printf("%-41s| %-31s\n",aux2 -> nombre, aux2->lista->NomLista);
+                printf("%-31s", aux2->artista);
+                printf("%9d |",aux2 -> anyo);
+
+                aux3 = (generoC*) firstList(aux2 -> generos);
+                while (aux3 != NULL)
+                {
+                    printf(" %s",aux3 -> NomGenero);
+                    aux3 = (generoC*) nextList(aux2 -> generos);
+                }
+                printf("\n                                         |                               \n");
+            }
+            aux2= (cancion*)nextList(Global -> canciones);
+        }
+        printf("-------------------------------------------------------------------------------------\n");
+
+
+    }
+    printf("--> Presione enter para continuar\n");
+    getchar();
+}
+
+
+cancion* existe_artista(char *nom_art, List *lista_art){ 
+    cancion * aux_artista= (cancion *) firstList(lista_art);
+    char aux_nom[MAX_CHAR], aux_lista[MAX_CHAR];
+
+    formato(nom_art, aux_nom);
+
+    if (aux_artista == NULL)
+    {
+        return NULL;
+    }
+    while(aux_artista != NULL)
+    {
+        formato(aux_artista->artista, aux_lista);
+        if(strcmp(aux_lista, aux_nom) == 0)
+        {
+            return aux_artista;
+        }
+        aux_artista = (cancion *) nextList(lista_art);
+    }
+    return NULL;
 }

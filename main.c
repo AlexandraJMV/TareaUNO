@@ -58,7 +58,7 @@ int main()
                     printf("Ingrese artista: ");
                     scanf("%[^\n]", hola);
                     getchar();
-                    Buscar_nom (hola, L_Global);
+                    Buscar_art (hola, L_Global);
                     break;
                     ////
                     case 3:
@@ -72,10 +72,12 @@ int main()
                 break;
 
             case 2:
+                system("cls");
                 leer_agregar_main(L_Global);
                 break;
 
             case 3:
+                system("cls");
                 elim_main_ver(L_Global);
                 break;
 

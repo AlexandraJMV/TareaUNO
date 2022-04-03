@@ -57,4 +57,8 @@ void mostrar_nombres_listas(listaGlobal * lg);
 
 void mostrar_una_lista(char * nom_lista, listaGlobal * lg);
 
+cancion* existe_artista(char *nom_art, List *lista_art);
+
+void Buscar_art (char* busqueda, listaGlobal* Global);
+
 #endif // FUNCIONES_H_INCLUDED
