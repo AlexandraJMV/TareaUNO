@@ -712,7 +712,6 @@ void Buscar_nom (char* busqueda, listaGlobal* Global)
     getchar();
 }
 
-
 cancion* existe_nombre(char *nom_can, List *lista_nom){ 
     char aux_nom[MAX_CHAR], aux_list[MAX_CHAR];
     cancion * aux_nombre= (cancion *) firstList(lista_nom);
@@ -846,7 +845,6 @@ void Buscar_art (char* busqueda, listaGlobal* Global)
     getchar();
 }
 
-
 cancion* existe_artista(char *nom_art, List *lista_art){ 
     cancion * aux_artista= (cancion *) firstList(lista_art);
     char aux_nom[MAX_CHAR], aux_lista[MAX_CHAR];
@@ -867,4 +865,104 @@ cancion* existe_artista(char *nom_art, List *lista_art){
         aux_artista = (cancion *) nextList(lista_art);
     }
     return NULL;
+}
+
+void recorreryMostrar(List * auxiliar){
+  cancion * aux=(cancion*)firstList(auxiliar);
+  while(aux!=NULL)
+  {
+    mostrar(aux);
+    printf("\n");
+    aux=(cancion*)nextList(auxiliar);
+  }
+  printf("\n");
+}
+
+void mostrar(cancion * aux)
+{
+  int contGeneros=0;
+  generoC * aux2=(generoC*)firstList(aux->generos);
+  
+  printf("%s,%s,",aux->nombre,aux->artista);
+  while(aux2 != NULL)
+  {
+    printf("%s ",aux2->NomGenero);
+    aux2=(generoC*)nextList(aux->generos);
+  }
+  printf(",%d,%s",aux->anyo,aux->lista->NomLista);
+  
+}
+
+void MostrarALLcanciones(listaGlobal * lg){
+  //definimos variables para mostrar todas las canciones de la lista global.
+  system("cls");
+  recorreryMostrar(lg->canciones);
+  printf("--> Presione enter para continuar\n");
+  getchar();
+}
+
+
+void exportar_canciones(listaGlobal * lg){
+    char nomArchivo[50];
+    FILE * salida;
+    cancion * song;
+
+    system("cls");
+    printf("Ingrese el nombre del archivo al cual le gustaria exportar sus canciones\n");
+    printf("Ejemplo : Nombre.csv\n");
+
+    scanf("%s", nomArchivo);
+    getchar();
+
+    salida = fopen(nomArchivo, "wt");
+    if(salida  == NULL)
+    {
+        perror("No se pudo crear/abrir archivo para exportacion\n");
+        exit(1);
+    }
+
+    song = (cancion *) firstList(lg->canciones);
+
+    for(int i  = 0 ; i<lg->CantCanciones ; i++)
+    {
+        char aux_gen[100] = "";
+        char aux_gens[100] = "\"";
+
+        fprintf(salida, "%s,%s,", song->nombre, song->artista);
+        
+        int cont_generos = 0;
+        generoC * rec_generos = (generoC *) firstList(song->generos);
+        generoC * aux_coma;
+        while(rec_generos != NULL)
+        {
+            strcat(aux_gen, rec_generos->NomGenero);
+            rec_generos = (generoC *)  nextList(song->generos);
+
+            if (rec_generos != NULL)
+            {
+                strcat(aux_gen, ", "); 
+            }
+            cont_generos++;
+        }
+
+        
+        if (cont_generos > 1)
+        {
+            strcat(aux_gens, aux_gen);
+            strcat(aux_gens, "\"");
+            fprintf(salida, "%s,", aux_gens);
+        }
+        else
+            fprintf(salida, "%s,", aux_gen);
+
+        fprintf(salida, "%d,%s\n", song->anyo, song->lista->NomLista);
+
+        song = (cancion *) nextList(lg->canciones);
+    }
+
+
+    fclose(salida);
+    printf("\nLas canciones han sido exportadas! Apriete enter para continuar\n");
+    getchar();
+    system("cls");
 }

@@ -4,10 +4,6 @@
 #include "list.h"
 #include "funciones.h"
 
-void LimpiarPantalla(){
-    printf("\n\n\n\n\n\n\n\n\n\n");
-}
-
 int main()
 {
     char str[100];
@@ -83,7 +79,7 @@ int main()
 
             case 4:
                 system("cls");
-                printf("1. Cancion\n");
+                printf("1. Canciones\n");
                 printf("2. Listas de reproduccion\n");
                 printf("3. Canciones en una lista de reproduccion\n\n");
                 printf("Ingresa parametro para mostrar:  ");
@@ -92,9 +88,7 @@ int main()
                 switch(selec2){
                     case 1:
                     system("cls");
-                    printf("Ingrese Cancion: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    MostrarALLcanciones(L_Global);
                     break;
                     ////
                     case 2:
@@ -130,7 +124,7 @@ int main()
                 break;
             case 6:
                 system("cls");
-                printf("Funcion no disponible\n");
+                exportar_canciones(L_Global);
                 getchar();
                 break;
             case 7:

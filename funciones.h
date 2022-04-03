@@ -61,4 +61,12 @@ cancion* existe_artista(char *nom_art, List *lista_art);
 
 void Buscar_art (char* busqueda, listaGlobal* Global);
 
+void recorreryMostrar(List * auxiliar);
+
+void mostrar(cancion * aux);
+
+void MostrarALLcanciones(listaGlobal * lg);
+
+void exportar_canciones(listaGlobal * lg);
+
 #endif // FUNCIONES_H_INCLUDED
