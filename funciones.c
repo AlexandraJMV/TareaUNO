@@ -734,3 +734,68 @@ cancion* existe_nombre(char *nom_can, List *lista_nom){
     }
     return NULL;
 }
+
+void mostrar_nombres_listas(listaGlobal * lg){
+    listaC * rec_lista = (listaC *) firstList (lg->listasExistentes);
+    int cont = 0;
+
+    printf("Listas de reproduccion existentes...\n\n");
+
+    while(rec_lista != NULL)
+    {
+        printf("%-31s%10d\n", rec_lista->NomLista, rec_lista->cantidadCan);
+        cont++;
+        rec_lista = (listaC *) nextList (lg->listasExistentes);
+    }
+
+    if(cont == 0)
+        printf("No tiene ninguna lista de reproduccion creada\n");
+    else printf("Existen %d listas de reproduccion!\n\n\n", cont);
+
+    printf("--> Presione enter para continuar\n");
+    getchar();
+}
+
+void mostrar_una_lista(char * nom_lista, listaGlobal * lg){
+
+    listaC * aux = existe_Lista(lg, nom_lista);
+    cancion * aux2;
+    generoC * aux3;
+    int num_cant;
+
+    if(aux == NULL)
+        printf("Su lista de reproduccion no existe!\n\n");
+    else
+    {
+        num_cant = aux->cantidadCan;
+        aux2 = (cancion *) firstList (aux->canciones);
+
+        printf("%s SI se encuentra en lista de Generos.\n\n",aux->NomLista);
+        printf("Lista de canciones del genero\n\n");
+        printf("Nombre/Artista/Anyo                      Lista/Generos\n");
+        printf("---------------------------------------------------------------------------\n");
+        for( int i = 0; i < num_cant; i++)
+        {
+            printf("%-41s| %-31s\n",aux2 -> nombre, aux2->lista->NomLista);
+            printf("%-31s", aux2->artista);
+            printf("%9d |",aux2 -> anyo);
+
+            aux3 = (generoC*) firstList(aux2 -> generos);
+            while (aux3 != NULL)
+            {
+                printf(" %s",aux3->NomGenero);
+                aux3 = (generoC*) nextList(aux2 -> generos);
+            }
+            printf("\n                                         |                               \n");
+
+            aux2 = (cancion*) nextList(aux -> canciones);
+        }
+        printf("-------------------------------------------------------------------------------------\n");
+        printf("\nCanciones de la lista impresas!\n");
+        getchar();
+    }
+
+    printf("--> Presione enter para continuar\n");
+    getchar();
+
+}

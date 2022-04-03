@@ -53,5 +53,8 @@ cancion * existe_nombre(char *nom_can, List *lista_nom);
 
 void Buscar_nom (char* busqueda, listaGlobal* Global);
 
+void mostrar_nombres_listas(listaGlobal * lg);
+
+void mostrar_una_lista(char * nom_lista, listaGlobal * lg);
 
 #endif // FUNCIONES_H_INCLUDED

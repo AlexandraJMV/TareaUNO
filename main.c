@@ -82,8 +82,8 @@ int main()
             case 4:
                 system("cls");
                 printf("1. Cancion\n");
-                printf("2. Nombres\n");
-                printf("3. Lista de reproduccion\n");
+                printf("2. Listas de reproduccion\n");
+                printf("3. Canciones en una lista de reproduccion\n\n");
                 printf("Ingresa parametro para mostrar:  ");
                 scanf("%d",&selec2);
                 getchar();
@@ -97,16 +97,16 @@ int main()
                     ////
                     case 2:
                     system("cls");
-                     printf("Ingrese Nombre: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    mostrar_nombres_listas(L_Global);
                     break;
                     ////
                     case 3:
                     system("cls");
-                    printf("Ingrese Lista de rep: ");
-                    fgets(str,100,stdin );
-                    ptrStr=str;
+                    printf("Ingrese el nombre de lista de repreoduccion que desea ver:\n\n");
+                    scanf("%[^\n]",hola);
+                    getchar();
+
+                    mostrar_una_lista(hola, L_Global);
                     break;
                 }
                 break;
